@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/views/register_view.dart';
 import 'firebase_options.dart';
 import 'views/login_view.dart';
+import 'views/verify_email_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +44,12 @@ class MyApp extends StatelessWidget {
           },
           "/register/": (context) {
             return const RegisterView();
+          },
+          "/notesview/": (context) {
+            return const NotesView();
+          },
+          "/verifyemail/": (context) {
+            return const VerifyEmailView();
           }
         });
   }
@@ -62,12 +68,18 @@ class HomePage extends StatelessWidget {
             // final user = FirebaseAuth.instance.currentUser;
             // final isEmailVerified = user?.emailVerified ?? false;
 
+            // print("CHECK HERE ==>> $user");
+
             // if (isEmailVerified) {
-            //   return const Text("Done!");
-            // } else {
+            //   // const Text("Email is verified!");
+            //   return const NotesView();
+            // } else if (user != null) {
             //   return const VerifyEmailView();
+            // } else {
+            //   return const LoginView();
             // }
 
+            // return const Text("Done!");
             return const LoginView();
           default:
             return const Text("Loading...");
@@ -77,26 +89,16 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class VerifyEmailView extends StatefulWidget {
-  const VerifyEmailView({super.key});
+class NotesView extends StatefulWidget {
+  const NotesView({super.key});
 
   @override
-  State<VerifyEmailView> createState() => _VerifyEmailViewState();
+  State<NotesView> createState() => _NotesView();
 }
 
-class _VerifyEmailViewState extends State<VerifyEmailView> {
+class _NotesView extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text("Please verify the email."),
-        TextButton(
-            onPressed: () async {
-              final user = FirebaseAuth.instance.currentUser;
-              await user?.sendEmailVerification();
-            },
-            child: const Text("Send email verification"))
-      ],
-    );
+    return Scaffold(appBar: AppBar(title: const Text("Main UI")), body: const Text("Hello World"));
   }
 }

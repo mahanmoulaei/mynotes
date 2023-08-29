@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/views/register_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -60,6 +59,15 @@ class _LoginViewState extends State<LoginView> {
               try {
                 final userCredential =
                     await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+
+                final user = FirebaseAuth.instance.currentUser;
+                final isEmailVerified = user?.emailVerified ?? false;
+
+                if (isEmailVerified) {
+                  Navigator.of(context).pushNamedAndRemoveUntil("/notesview/", (context) => false);
+                } else if (user != null) {
+                  Navigator.of(context).pushNamedAndRemoveUntil("/verifyemail/", (context) => false);
+                } else {}
 
                 print("here $userCredential");
               } on FirebaseAuthException catch (e) {
