@@ -1,0 +1,7 @@
+{
+    "prettier.tabWidth": 4,
+    "[dart]": {
+        "editor.tabSize": 4,
+        "editor.formatOnSave": true
+    }
+}
