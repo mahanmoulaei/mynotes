@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/views/register_view.dart';
@@ -83,7 +84,7 @@ class HomePage extends StatelessWidget {
             // return const Text("Done!");
             return const LoginView();
           default:
-            return const Text("Loading...");
+            return const CupertinoActivityIndicator();
         }
       },
     );

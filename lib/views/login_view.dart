@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
+import 'package:mynotes/constants/routes.dart';
 
 import '../utilities/show_error_dialog.dart';
 
@@ -37,53 +37,42 @@ class _LoginViewState extends State<LoginView> {
       appBar: AppBar(title: const Text('Login'), backgroundColor: Theme.of(context).colorScheme.inversePrimary),
       body: Column(
         children: [
-          TextField(
-              controller: _email,
-              enableSuggestions: false,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: "Enter your email here...",
-              )),
+          TextField(controller: _email, enableSuggestions: false, autocorrect: false, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(hintText: "Enter your email here...")),
           TextField(
             controller: _password,
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
-            decoration: const InputDecoration(
-              hintText: "Enter your password here...",
-            ),
+            decoration: const InputDecoration(hintText: "Enter your password here..."),
           ),
           TextButton(
+            child: const Text('Login'),
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
 
               try {
-                final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+                await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 
                 final user = FirebaseAuth.instance.currentUser;
                 final isEmailVerified = user?.emailVerified ?? false;
 
                 if (isEmailVerified) {
-                  Navigator.of(context).pushNamedAndRemoveUntil("/notesview/", (context) => false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(notesviewRoute, (context) => false);
                 } else if (user != null) {
-                  Navigator.of(context).pushNamedAndRemoveUntil("/verifyemail/", (context) => false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(verifyemailRoute, (context) => false);
                 } else {}
-
-                devtools.log("here $userCredential");
               } on FirebaseAuthException catch (e) {
                 final String? message = e.message;
                 await showErrorDialog(context, "$message");
               }
             },
-            child: const Text('Login'),
           ),
           TextButton(
+              child: const Text("Not registered? Sign Up"),
               onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil("/register/", (context) => false);
-              },
-              child: const Text("Not registered? Sign Up"))
+                Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (context) => false);
+              }),
         ],
       ),
     );
