@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/views/register_view.dart';
 import 'firebase_options.dart';
 import 'views/login_view.dart';
@@ -39,16 +40,16 @@ class MyApp extends StatelessWidget {
         ),
         home: const HomePage(),
         routes: {
-          "/login/": (context) {
+          loginRoute: (context) {
             return const LoginView();
           },
-          "/register/": (context) {
+          registerRoute: (context) {
             return const RegisterView();
           },
-          "/notesview/": (context) {
+          notesviewRoute: (context) {
             return const NotesView();
           },
-          "/verifyemail/": (context) {
+          verifyemailRoute: (context) {
             return const VerifyEmailView();
           }
         });
