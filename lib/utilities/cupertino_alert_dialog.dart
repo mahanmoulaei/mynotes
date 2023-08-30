@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
-void showAlertDialog(BuildContext context, String text) {
-  showCupertinoModalPopup<void>(
+Future<void> showAlertDialog(BuildContext context, String? title, String? content, String? btnLabel) {
+  return showCupertinoModalPopup<void>(
     context: context,
     builder: (BuildContext context) => CupertinoAlertDialog(
-      title: const Text('Alert'),
-      content: Text(text),
+      title: title != null ? Text(title) : const Text("Alert"),
+      content: content != null ? Text(content) : const Text(""),
       actions: <CupertinoDialogAction>[
         CupertinoDialogAction(
           /// This parameter indicates this action is the default,
@@ -14,18 +14,8 @@ void showAlertDialog(BuildContext context, String text) {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('No'),
-        ),
-        CupertinoDialogAction(
-          /// This parameter indicates the action would perform
-          /// a destructive action such as deletion, and turns
-          /// the action's text color to red.
-          isDestructiveAction: true,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
+          child: btnLabel != null ? Text(btnLabel) : const Text("Ok"),
+        )
       ],
     ),
   );

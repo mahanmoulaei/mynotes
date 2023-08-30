@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
-
-import '../utilities/show_error_dialog.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
+import '../services/auth/auth_exceptions.dart';
+import '../utilities/cupertino_alert_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -52,19 +52,21 @@ class _LoginViewState extends State<LoginView> {
               final password = _password.text;
 
               try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+                await AuthService.firebase().logIn(email: email, password: password);
 
-                final user = FirebaseAuth.instance.currentUser;
-                final isEmailVerified = user?.emailVerified ?? false;
+                final user = AuthService.firebase().currentUser;
 
-                if (isEmailVerified) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(notesviewRoute, (context) => false);
-                } else if (user != null) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(verifyemailRoute, (context) => false);
-                } else {}
-              } on FirebaseAuthException catch (e) {
-                final String? message = e.message;
-                await showErrorDialog(context, "$message");
+                if (user?.isEmailVerified ?? false) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(notesviewRoute, (_) => false);
+                } else {
+                  Navigator.of(context).pushNamedAndRemoveUntil(verifyemailRoute, (_) => false);
+                }
+              } on UserNotFoundAuthException {
+                return showAlertDialog(context, "Login", "User not found!", null);
+              } on WrongPasswordAuthException {
+                return showAlertDialog(context, "Login", "Wrong credentials!", null);
+              } on GenericAuthException {
+                return showAlertDialog(context, "Login", "Authentication error!", null);
               }
             },
           ),
