@@ -1,9 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
-
+import '../constants/routes.dart';
+import '../services/auth/auth_service.dart';
 import '../services/auth/auth_exceptions.dart';
 import '../utilities/cupertino_alert_dialog.dart';
 

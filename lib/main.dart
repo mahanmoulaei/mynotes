@@ -67,20 +67,6 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            // final user = AuthService.firebase().currentUser;
-
-            // if (user != null) {
-            //   final message = user.isEmailVerified.toString();
-            //   showErrorDialog(context, "The user verfication: $message");
-
-            //   if (user.isEmailVerified) {
-            //     return const NotesView();
-            //   } else {
-            //     return const VerifyEmailView();
-            //   }
-            // } else {
-            //   return const LoginView();
-            // }
             return const LoginView();
           default:
             return const CupertinoActivityIndicator();

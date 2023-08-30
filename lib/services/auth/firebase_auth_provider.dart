@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:mynotes/firebase_options.dart';
-
+import '../../firebase_options.dart';
 import 'auth_user.dart';
 import 'auth_provider.dart';
 import 'auth_exceptions.dart';

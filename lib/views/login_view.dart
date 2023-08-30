@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
+import '../constants/routes.dart';
+import '../services/auth/auth_service.dart';
 import '../services/auth/auth_exceptions.dart';
 import '../utilities/cupertino_alert_dialog.dart';
 
@@ -59,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
                 if (user?.isEmailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(notesviewRoute, (_) => false);
                 } else {
-                  Navigator.of(context).pushNamedAndRemoveUntil(verifyemailRoute, (_) => false);
+                  Navigator.of(context).pushNamed(verifyemailRoute);
                 }
               } on UserNotFoundAuthException {
                 return showAlertDialog(context, "Login", "User not found!", null);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
-
+import '../constants/routes.dart';
+import '../services/auth/auth_service.dart';
 import '../enums/menu_action.dart';
 import '../utilities/cupertino_dialog_box.dart';
 
