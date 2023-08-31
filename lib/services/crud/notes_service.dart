@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart' show MissingPlatformDirectoryException, getApplicationDocumentsDirectory;
@@ -48,6 +50,16 @@ class CouldNotUpdateNote implements Exception {}
 
 class NotesService {
   Database? _db;
+  List<DatabaseNote> _notes = [];
+  final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
+
+  Future<void> _cacheNotes() async {
+    final allNotes = await getAllNotes();
+
+    _notes = allNotes.toList();
+
+    _notesStreamController.add(_notes);
+  }
 
   Database _getDatabaseOrThrow() {
     final db = _db;
@@ -72,6 +84,8 @@ class NotesService {
 
       await db.execute(createUserTable);
       await db.execute(createNoteTable);
+
+      await _cacheNotes();
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectory();
     }
@@ -140,8 +154,12 @@ class NotesService {
     const text = "";
 
     final noteId = await db.insert(noteTable, {userIdColumn: owner.id, textColumn: text, isSyncedWithCloudColumn: 1});
+    final note = DatabaseNote(id: noteId, userId: owner.id, text: text, isSyncedWithCloud: true);
 
-    return DatabaseNote(id: noteId, userId: owner.id, text: text, isSyncedWithCloud: true);
+    _notes.add(note);
+    _notesStreamController.add(_notes);
+
+    return note;
   }
 
   Future<bool> deleteNote({required int id}) async {
@@ -152,12 +170,20 @@ class NotesService {
       throw CouldNotDeleteNote();
     }
 
+    _notes.removeWhere((note) => note.id == id);
+    _notesStreamController.add(_notes);
+
     return true;
   }
 
   Future<int> deleteAllNotes() async {
     final db = _getDatabaseOrThrow();
-    return await db.delete(noteTable);
+    final deletedCount = await db.delete(noteTable);
+
+    _notes = [];
+    _notesStreamController.add(_notes);
+
+    return deletedCount;
   }
 
   Future<DatabaseNote> getNote({required int id}) async {
@@ -169,10 +195,16 @@ class NotesService {
       throw CouldNotFindNote();
     }
 
-    return DatabaseNote.fromRow(results.first);
+    final note = DatabaseNote.fromRow(results.first);
+
+    _notes.removeWhere((note) => note.id == id);
+    _notes.add(note);
+    _notesStreamController.add(_notes);
+
+    return note;
   }
 
-  Future<Iterable<DatabaseNote>> getAllNotes({required int id}) async {
+  Future<Iterable<DatabaseNote>> getAllNotes() async {
     final db = _getDatabaseOrThrow();
 
     final results = await db.query(noteTable);
@@ -193,7 +225,7 @@ class NotesService {
       throw CouldNotUpdateNote();
     }
 
-    return await getNote(id: id);
+    return await getNote(id: id); // it also automatically caches the new attributes...
   }
 }
 
